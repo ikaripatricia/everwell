@@ -1,5 +1,7 @@
 # Integration notes
 
+Historical notes for the app combination in PR #2. The current branch adds optional Supabase account persistence; see SUPABASE.md and the root README for current behaviour.
+
 ## Inputs
 
 - Wattle prototype previously committed to this repository in PR #1.

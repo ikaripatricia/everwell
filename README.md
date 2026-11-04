@@ -1,36 +1,41 @@
-# Everwell — women's preventive health prototype
+# Everwell — preventive health test app
 
-A combined interactive concept for Australian women's preventive care, bringing together the original Everwell Victorian pilot app and the Wattle prevention experience.
+Everwell combines a women's prevention dashboard, sample biomarker trends, care-package exploration, Australian screening guidance and GP discussion notes. This branch adds Supabase Auth and owner-scoped persistence for prevention workspace preferences.
 
-## Try it without publishing
+## Test locally — no publishing
 
-1. Download this branch as a ZIP using GitHub's **Code → Download ZIP** option.
-2. Extract the ZIP.
-3. Open `index.html` in Chrome, Edge, Safari or Firefox.
-
-The complete app is in one file. It needs no dependencies, installation, build, account or internet connection. Official reference links need internet access when opened.
-
-Alternatively, from the extracted folder run:
+Download this branch as a ZIP, extract it and run this in the folder:
 
 ```sh
 python3 -m http.server 8000 --bind 127.0.0.1
 ```
 
-Then open http://localhost:8000 in the browser on that same computer. No publishing or external hosting is configured.
+Open http://localhost:8000 on the same computer. No framework, package installation or build is needed. Directly opening `index.html` still allows demo exploration; use localhost for account testing.
 
-## Included
+## Supabase setup status
 
-- Unified Everwell overview and prevention checklist.
-- Sample ferritin, vitamin D and HbA1c trends with accessible result-history tables.
-- Core, Plus and Advanced care package comparison with indicative AUD pricing.
-- Proposed Victorian clinician assessment, results review and follow-up pathway.
-- National cervical, breast and bowel screening information by age group.
-- Women's life-stage topics, heart health, bone health, sleep and wellbeing.
-- Preparation checklist and downloadable GP discussion notes.
-- Australian clinical, privacy, software-regulation and advertising launch considerations.
+The user-supplied test project URL and public publishable key are configured in `supabase-config.js`. This is public browser configuration, not a server secret. No secret/service-role key, database password or personal access token belongs in this repository.
 
-All selections stay in page memory and reset on refresh. There is no backend, analytics, clinical monitoring, patient record, booking, enrolment or checkout. Use fictional data only.
+**The migration has not been applied and live connectivity has not been verified from the development environment.** Its network policy denied connections to Supabase. A public project URL/key does not grant database-administration access.
 
-This is a product prototype, not medical advice or a live care service. Sample intervals are illustrative, package pricing is unvalidated and clinical/legal review is required before real use.
+To finish setup in the selected TEST project:
 
-See [testing instructions](docs/TESTING.md) and [integration notes](docs/MERGE_NOTES.md).
+1. Run [`supabase/migrations/202611040001_everwell_workspaces.sql`](supabase/migrations/202611040001_everwell_workspaces.sql) in its SQL Editor as an administrator. It creates one app-specific table, owner-only row policies, restricted column grants and a server-controlled revision trigger, in a transaction. It does not touch existing clinical tables or import the sample lab data. If the table already exists, stop and inspect it rather than deleting it.
+2. Run [`supabase/tests/workspace_access.sql`](supabase/tests/workspace_access.sql) in the SQL Editor. It creates test fixtures inside a transaction, checks anonymous and cross-account denial plus owner access, and rolls everything back. Do not proceed if an assertion fails.
+3. Confirm email/password sign-in is enabled under Authentication. Keep email confirmation enabled, configure the local test Site URL/allowed redirect if needed, and use only test email accounts. Hosted default email sending is rate-limited; check Supabase's SMTP settings for reliable confirmation delivery.
+4. Serve the app locally, open **My account**, create a test account, confirm its email and sign in. Tick checklist items, add a discussion topic or select a package. After the indicator says **Account · saved**, refresh, sign in again and verify the changes reload.
+5. Test a second account; it must start with a separate empty workspace. Also test sign-out and deleting a saved workspace.
+
+Alternatively, finish connecting Supabase in the assistant chat so the migration and live checks can be applied through the management connection. No app deployment is needed for either route.
+
+## What is stored
+
+- Auth: email and credentials handled by Supabase Auth, not by an Everwell password table.
+- `public.everwell_workspaces`: user ID, optional display name, completed task identifiers, chosen health/result discussion identifiers and package preference.
+- Lab values remain explicitly fictional fixtures bundled with the app. They are never uploaded or seeded as patient records. No clinical notes, appointment records, prescriptions or clinician alerts are implemented.
+
+Demo selections are not automatically imported on sign-in: a new account starts with an empty prevention workspace. Changes save automatically while signed in. Access/refresh tokens stay in page memory; refreshing requires signing in again. On sign-out the workspace is cleared from the interface. There is no analytics, external font/image request, localStorage session, checkout or enrolment.
+
+Read [database details](docs/SUPABASE.md), [testing steps](docs/TESTING.md) and [source integration notes](docs/MERGE_NOTES.md).
+
+This remains a test prototype for fictional information, not a clinical service or legal compliance certification. Australian hosting/region, vendor arrangements, health-data security, clinical governance and legal obligations need validation before real patient use.
