@@ -1,32 +1,27 @@
-# Wattle prototype
+# Testing the combined Everwell prototype
 
-An interactive Australian women's preventive health concept inspired by Function Health. This is a fictional demo, not a clinical service.
+Open `index.html` directly in a modern browser. See the root README for optional local-server instructions. No deployment is needed.
 
-## Test locally
+## Main flows
 
-No dependencies or build step are required.
+1. Navigate all seven sections: overview, prevention plan, results, care packages, screening, life stages and knowledge hub.
+2. In Results & trends, select each of Ferritin, Vitamin D and HbA1c. Confirm the value, units, chart, four-row history and discussion context change together.
+3. Add a result to GP discussion notes. Add a health topic from the overview. Both should appear in the prevention checklist and downloaded notes. Adding the same result twice should not duplicate it.
+4. Tick a checklist item and check the overview next-step count. Download notes and confirm selected topics and completion marks are included.
+5. In Care packages, select Core, Plus and Advanced. Confirm the selected card and current-package heading agree. There must be no charge or enrolment.
+6. Open the overview's preparation guide. Check its close button, Escape key and outside-click dismissal.
+7. Open the prevention planner and explore several age groups. Read the full screening guide for individual-risk and symptoms caveats.
+8. Change the life-stage tabs and open health-topic dialogs.
+9. Open with `#results` or `#membership` in the URL. Refresh: the requested section should remain selected while package/checklist choices reset.
+10. Check 390px, 768px and desktop widths for horizontal page overflow. On narrow screens the top navigation scrolls horizontally.
+11. Disconnect from the internet and repeat core flows. Font and image assets are local/embedded; only deliberately opened official links need internet access.
 
-1. Check out this branch and open `index.html` in a modern browser.
-2. Alternatively, run `python3 -m http.server 8000 --bind 127.0.0.1` from the repository root and visit http://localhost:8000.
+## Validation completed
 
-No deployment or publishing is configured. Google Fonts and an Unsplash image require an internet connection; the interface remains functional if they are unavailable.
+- Inline JavaScript syntax check passed.
+- Chromium checks passed at 1440px, 768px and 390px widths across all seven views.
+- All three marker datasets, result-history tables, package selection, adding a result to discussion notes, checklist count and the downloaded notes were verified.
+- Preparation dialog dismissal, age-based guidance, life-stage content, hash navigation and refresh reset were verified.
+- No JavaScript errors or external asset requests occurred during the checks.
 
-## Manual checks
-
-- Navigate all five views using the sidebar.
-- Open the prevention planner, select an age group and explore its general screening guidance.
-- Tick checklist items and confirm the overview count changes.
-- Add a health topic to GP discussion notes and download the notes as a text file.
-- Change life-stage tabs and open official guidance links.
-- Check desktop and mobile layouts and close dialogs using Escape or the close button.
-- Refresh the page to reset all demo selections.
-
-## Validation performed
-
-JavaScript syntax check passed. Chromium checks passed for the planner, checklist count and desktop/mobile overflow. External assets were blocked during browser QA, so their appearance was not verified.
-
-## Scope and limitations
-
-The profile is fictional. Inputs are held in page memory only. There are no accounts, bookings, patient records, clinical alerts or clinician communications. Do not enter real health information.
-
-The Knowledge hub contains the reference-model analysis and Australian launch requirements covering privacy, clinical governance, medical-device classification and advertising. These are product planning notes, not legal clearance. Clinical and legal review, operational controls and appropriate security are required before real use.
+Safari/Firefox and assistive-technology testing have not been performed. This is functional prototype validation, not clinical validation or legal compliance certification.
