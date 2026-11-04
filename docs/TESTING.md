@@ -1,27 +1,35 @@
-# Testing the combined Everwell prototype
+# Testing Everwell with Supabase
 
-Open `index.html` directly in a modern browser. See the root README for optional local-server instructions. No deployment is needed.
+## Offline demo
 
-## Main flows
+Serve the repository with `python3 -m http.server 8000 --bind 127.0.0.1` and open http://localhost:8000. Navigate overview, prevention plan, results, care packages, screening guide, life stages, My account and knowledge hub. Verify chart switching, result history, preparation guide, age-based screening guidance and downloadable GP notes.
 
-1. Navigate all seven sections: overview, prevention plan, results, care packages, screening, life stages and knowledge hub.
-2. In Results & trends, select each of Ferritin, Vitamin D and HbA1c. Confirm the value, units, chart, four-row history and discussion context change together.
-3. Add a result to GP discussion notes. Add a health topic from the overview. Both should appear in the prevention checklist and downloaded notes. Adding the same result twice should not duplicate it.
-4. Tick a checklist item and check the overview next-step count. Download notes and confirm selected topics and completion marks are included.
-5. In Care packages, select Core, Plus and Advanced. Confirm the selected card and current-package heading agree. There must be no charge or enrolment.
-6. Open the overview's preparation guide. Check its close button, Escape key and outside-click dismissal.
-7. Open the prevention planner and explore several age groups. Read the full screening guide for individual-risk and symptoms caveats.
-8. Change the life-stage tabs and open health-topic dialogs.
-9. Open with `#results` or `#membership` in the URL. Refresh: the requested section should remain selected while package/checklist choices reset.
-10. Check 390px, 768px and desktop widths for horizontal page overflow. On narrow screens the top navigation scrolls horizontally.
-11. Disconnect from the internet and repeat core flows. Font and image assets are local/embedded; only deliberately opened official links need internet access.
+## Automated frontend checks (mock API only)
 
-## Validation completed
+Install Playwright in a development environment with an available Chromium browser:
 
-- Inline JavaScript syntax check passed.
-- Chromium checks passed at 1440px, 768px and 390px widths across all seven views.
-- All three marker datasets, result-history tables, package selection, adding a result to discussion notes, checklist count and the downloaded notes were verified.
-- Preparation dialog dismissal, age-based guidance, life-stage content, hash navigation and refresh reset were verified.
-- No JavaScript errors or external asset requests occurred during the checks.
+```sh
+python3 -m pip install playwright
+EVERWELL_CHROMIUM=/path/to/chromium python3 tests/browser_supabase.py
+```
 
-Safari/Firefox and assistive-technology testing have not been performed. This is functional prototype validation, not clinical validation or legal compliance certification.
+The default executable path is `/usr/bin/chromium`. The test intercepts every network request and supplies a fake Supabase API. It does not contact the configured project or send confirmation emails.
+
+Covered: missing/privileged-key refusal, sign-in, owned workspace creation, stable checklist IDs, adding result topics, package persistence, safe display-name rendering, GP-note download, new-page reload after sign-in, account switching without previous-user data, failed-save retry, version conflict detection, deletion without automatic recreation, confirmation-required signup, access-token refresh and responsive navigation at 1440/768/390px. These checks passed in Chromium. They do not prove that deployed RLS policies are correct.
+
+## Real database checks — pending setup
+
+Apply the migration in the TEST project, then run `supabase/tests/workspace_access.sql` in its SQL Editor. The script asserts anonymous operation denial, owner access, cross-account operation denial, server-controlled revisions and invalid task rejection. It rolls back all fixtures. This script has not been executed from the current environment.
+
+Then test through the actual app:
+
+1. Create test account A and confirm email. Sign in through My account.
+2. Complete a task, add a topic, choose Core, enter an optional fictional display name, and wait for **Account · saved**.
+3. Refresh and sign in again. All saved preferences must reload; sample lab numbers remain unchanged examples.
+4. Sign out. The interface must return to a clean demo. Create/sign in as account B and verify A's preferences are absent.
+5. Using account B's access token in a dedicated test client, attempt to read/update/delete account A's row or insert a row with A's ID. Database policies must deny these operations even if the request's query parameters are changed.
+6. Open A in two browser tabs. Make/save a change in one, then edit the older state in the other. The older version must show a conflict rather than silently overwrite.
+7. Block the network, make a change and verify **Not saved**. Restore access and retry.
+8. Delete A's saved workspace and verify its row is removed, B is unaffected, and no row is recreated until A explicitly reloads or signs in again.
+
+Do not use real health data. Safari/Firefox, assistive technology, live SQL/RLS, email delivery and real-project network checks remain unverified here. No app publication is part of these steps.
