@@ -1,7 +1,7 @@
-// Public client configuration only. These values are designed to be visible in a browser.
-// Never put a Supabase secret/service_role key, database password, or access token here.
-// Fill these from the selected TEST project's Connect dialog after applying the migration.
+// Public client configuration only. Never add secret/service_role keys or database passwords.
+// Target: user-provided website_everwell project. Confirm Sydney in the Supabase dashboard.
+// Apply/verify the schema and migrate any existing accounts/data before switching from Tokyo.
 window.EVERWELL_SUPABASE_CONFIG = Object.freeze({
-  url: 'https://mcalqtgiyxrtldpamxfo.supabase.co',
-  publishableKey: 'sb_publishable_12UKK3PDZyzWyr7L0fSGcw_TTSxjWLA'
+  url: 'https://iczjiztltcpsnewofyya.supabase.co',
+  publishableKey: 'sb_publishable_WKeJcswFZ5yDVutnrCfTEQ_psKEpw8Y'
 });
