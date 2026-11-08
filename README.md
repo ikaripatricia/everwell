@@ -14,11 +14,11 @@ Open http://localhost:8000 on the same computer. No framework, package installat
 
 ## Supabase setup status
 
-The user-supplied test project URL and public publishable key are configured in `supabase-config.js`. This is public browser configuration, not a server secret. No secret/service-role key, database password or personal access token belongs in this repository.
+The user-supplied `website_everwell` project URL (`https://iczjiztltcpsnewofyya.supabase.co`) and its public publishable key are configured in `supabase-config.js`. This replaces the previous Tokyo project configuration; it does not migrate any accounts or data. Sydney (`ap-southeast-2`) is the requested region and must be confirmed in the new project's dashboard. This is public browser configuration, not a server secret. No secret/service-role key, database password or personal access token belongs in this repository.
 
 **The migration has not been applied and live connectivity has not been verified from the development environment.** Its network policy denied connections to Supabase. A public project URL/key does not grant database-administration access.
 
-To finish setup in the selected TEST project:
+Before switching existing users from Tokyo, follow [Sydney cutover steps](docs/SYDNEY_CUTOVER.md). To finish setup in the selected TEST project:
 
 1. Run [`supabase/migrations/202611040001_everwell_workspaces.sql`](supabase/migrations/202611040001_everwell_workspaces.sql) in its SQL Editor as an administrator. It creates one app-specific table, owner-only row policies, restricted column grants and a server-controlled revision trigger, in a transaction. It does not touch existing clinical tables or import the sample lab data. If the table already exists, stop and inspect it rather than deleting it.
 2. Run [`supabase/tests/workspace_access.sql`](supabase/tests/workspace_access.sql) in the SQL Editor. It creates test fixtures inside a transaction, checks anonymous and cross-account denial plus owner access, and rolls everything back. Do not proceed if an assertion fails.

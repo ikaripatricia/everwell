@@ -2,7 +2,9 @@
 
 ## Configured target
 
-Project: `https://mcalqtgiyxrtldpamxfo.supabase.co`.
+Project: **website_everwell** — `https://iczjiztltcpsnewofyya.supabase.co`.
+
+Requested region: **Oceania (Sydney), `ap-southeast-2`**. Region must be confirmed in Supabase's dashboard; a project URL does not prove its physical location. The frontend configuration now targets this new project. No data, accounts, Auth settings or Storage objects have been migrated from the previous Tokyo project. See [cutover steps](SYDNEY_CUTOVER.md).
 
 `supabase-config.js` contains the supplied publishable browser key. Publishable keys are intentionally visible, so security depends on Supabase Auth, PostgreSQL grants and row-level policies. Never replace it with a secret/service-role key. The client rejects known secret-key prefixes and legacy JWTs whose role is not `anon`.
 
