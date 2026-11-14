@@ -8,7 +8,7 @@ from urllib.parse import urlparse, parse_qs
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-HTML = re.sub(r'<script src="supabase-[^"]+"></script>', '', (ROOT/'index.html').read_text())
+HTML = re.sub(r'<script src="[^"]+"></script>', '', (ROOT/'index.html').read_text())
 CLIENT = (ROOT/'supabase-client.js').read_text()
 PROJECT = 'https://everwell-test.supabase.co'
 ALICE='11111111-1111-4111-8111-111111111111'

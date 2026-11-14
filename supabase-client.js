@@ -183,6 +183,7 @@
     session = null; revision = null; displayName = ''; ready = false; dirty = false;
     conflicted = false; writing = false; inFlight = null; refreshPromise = null;
     model.reset(); present();
+    window.dispatchEvent(new Event('everwell:auth'));
   }
   async function authenticate(signup) {
     const form = ui['account-form'];
@@ -203,7 +204,7 @@
       if (!data.user?.id || !data.refresh_token) throw new Error('Invalid sign-in response');
       resetSession();
       session = {...data, expiresAt:Date.now() + Number(data.expires_in || 3600)*1000};
-      present(); await loadWorkspace();
+      present(); window.dispatchEvent(new Event('everwell:auth')); await loadWorkspace();
     } catch (e) {
       if (e.name === 'AbortError') return;
       errorText(message(e)); status(session ? 'Signed in, but your saved plan could not be loaded.' : 'Sign-in has not completed.', session ? 'Plan unavailable' : 'Not signed in');
@@ -259,6 +260,13 @@
   window.addEventListener('everwell:change', changed);
   window.addEventListener('beforeunload', e => {
     if (session && (dirty || writing)) { e.preventDefault(); e.returnValue = ''; }
+  });
+  // Only the signed-in user's JWT is used. No service or provider key is exposed.
+  window.EverwellClinicalAPI = Object.freeze({
+    user: () => session ? {id:session.user.id,email:session.user.email} : null,
+    async read(path) {const token=await accessToken();return request('/rest/v1/'+path,{},token)},
+    async rpc(name,body) {const token=await accessToken();return request('/rest/v1/rpc/'+name,{method:'POST',body:JSON.stringify(body)},token)},
+    async analyse(body) {const token=await accessToken();return request('/functions/v1/analyse-blood',{method:'POST',body:JSON.stringify(body)},token)}
   });
   if (!validConfig()) {
     ui['account-form'].hidden = true; ui['account-signedin'].hidden = true;

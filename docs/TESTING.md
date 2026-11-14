@@ -33,3 +33,8 @@ Then test through the actual app:
 8. Delete A's saved workspace and verify its row is removed, B is unaffected, and no row is recreated until A explicitly reloads or signs in again.
 
 Do not use real health data. Safari/Firefox, assistive technology, live SQL/RLS, email delivery and real-project network checks remain unverified here. No app publication is part of these steps.
+
+
+## AI draft and doctor review checks
+
+Run `node --test tests/blood_analysis.test.mjs tests/analysis_worker.test.mjs` with Node 24+, then `python3 tests/browser_clinical.py` with Playwright/Chromium. These checks use fictional values and simulated provider/database responses. Run `supabase/tests/doctor_approval.sql` separately in the migrated test database to verify actual approval/RLS enforcement. The real-database assertions remain unexecuted here. See [AI_DOCTOR_REVIEW.md](AI_DOCTOR_REVIEW.md) for setup and the explicit patient-release boundary.
