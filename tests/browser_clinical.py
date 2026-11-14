@@ -54,8 +54,8 @@ with sync_playwright() as p:
  def view(page,name):page.locator('nav [data-view='+name+']').click()
  def signin(page,email):
   view(page,'account');page.locator('#account-email').fill(email);page.locator('#account-password').fill('test-password');page.locator('#account-signin').click();page.wait_for_function("document.querySelector('#account-indicator').textContent==='Account · saved'")
- patient=newpage();signin(patient,'patient@example.invalid');view(patient,'blood');patient.wait_for_function("document.querySelector('#blood-report-list').children.length===1")
- assert patient.locator('#review-nav').is_hidden();assert 'SECRET_AI_DRAFT' not in patient.locator('#blood').inner_text();assert patient.locator('#blood .blood-graph').count()==0
+ patient=newpage();signin(patient,'patient@example.invalid');view(patient,'results');patient.wait_for_function("document.querySelector('#blood-report-list').children.length===1")
+ assert patient.locator('nav [data-view=blood]').count()==0;assert patient.locator('#results #blood').is_visible();assert patient.locator('#review-nav').is_hidden();assert 'SECRET_AI_DRAFT' not in patient.locator('#blood').inner_text();assert patient.locator('#blood .blood-graph').count()==0
  patient.locator('#blood-example').click();patient.locator('#blood-source').check();patient.locator('#blood-consent').check();patient.locator('#blood-generate').click();patient.wait_for_function("document.querySelector('#blood-submit-status').textContent.includes('Draft ready')")
  assert len(reports)==2;assert not any(u==P and path.endswith('blood_analysis_drafts') for u,path in requests)
  doctor=newpage();signin(doctor,'doctor@example.invalid');doctor.wait_for_function("!document.querySelector('#review-nav').hidden");view(doctor,'review');doctor.get_by_role('button',name='Review report',exact=True).first.click();doctor.wait_for_selector('#doctor-final-summary');assert doctor.locator('#doctor-final-summary').input_value()=='SECRET_AI_DRAFT'
@@ -65,10 +65,11 @@ with sync_playwright() as p:
  patient.locator('#blood-refresh').click();patient.wait_for_function("document.querySelector('#blood-report-list').textContent.includes('DOCTOR_EDITED_FINAL')");assert 'SECRET_AI_DRAFT' not in patient.locator('#blood').inner_text();assert patient.locator('#blood .blood-graph').count()==1
  # Reject the remaining draft and verify its graphs stay withheld.
  doctor.get_by_role('button',name='Review report',exact=True).first.click();doctor.locator('#doctor-review-note').fill('Please correct the source values.');doctor.get_by_role('button',name='Reject — keep draft private',exact=True).click();doctor.wait_for_function("document.querySelector('#review-detail').children.length===0");assert len(releases)==1
- stranger=newpage();signin(stranger,'other@example.invalid');view(stranger,'blood');stranger.wait_for_function("document.querySelector('#blood-message').textContent.includes('No reports')");assert not stranger.locator('#blood-report-list').inner_text()
+ stranger=newpage();signin(stranger,'other@example.invalid');view(stranger,'results');stranger.wait_for_function("document.querySelector('#blood-message').textContent.includes('No reports')");assert not stranger.locator('#blood-report-list').inner_text()
  for width in [1440,768,390]:
   patient.set_viewport_size({'width':width,'height':1000})
-  for section in ['overview','blood','account','plan','results','membership','screening','life','learn']:
+  for section in ['overview','account','plan','results','membership','screening','life','learn']:
    view(patient,section);assert patient.evaluate('document.documentElement.scrollWidth<=innerWidth'),(width,section)
   doctor.set_viewport_size({'width':width,'height':1000});view(doctor,'review');assert doctor.evaluate('document.documentElement.scrollWidth<=innerWidth')
+ patient.evaluate("location.hash='blood'");patient.wait_for_function("location.hash==='#results'");assert patient.locator('#results').is_visible();
  assert not errors,errors;b.close();print('PASS: patient withholding, doctor-only queue, explicit verification, edited release, rejection, separate accounts and responsive UI. Mock API only; real RLS/provider not exercised.')
