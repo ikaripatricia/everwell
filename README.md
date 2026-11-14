@@ -38,7 +38,7 @@ Demo selections are not automatically imported on sign-in: a new account starts 
 
 ## Optional AI drafts and doctor review
 
-The **Blood reports** section accepts structured fictional test values for six supported markers. OpenAI prepares a doctor-only narrative draft; graphs are generated deterministically from the input values. A verified assigned doctor reviews the original lab source, edits the final explanation and approves or rejects the exact draft version. Patients cannot read drafts or self-approve. Approved graphs and the final doctor explanation are released together.
+The **Sample results** section accepts structured fictional test values for six supported markers. OpenAI prepares a doctor-only narrative draft; graphs are generated deterministically from the input values. A verified assigned doctor reviews the original lab source, edits the final explanation and approves or rejects the exact draft version. Patients cannot read drafts or self-approve. Approved graphs and the final doctor explanation are released together.
 
 The feature is disabled until its migration, registered reviewer assignments and server-only provider settings are configured. It has not been deployed or tested against live Supabase/OpenAI. Do not add provider/service secrets to the frontend or chat. See [AI/doctor review setup and limits](docs/AI_DOCTOR_REVIEW.md) for the worker, role provisioning, database assertions, model settings and clinical-governance requirements. PDF/image extraction and urgent-result monitoring are not implemented.
 
