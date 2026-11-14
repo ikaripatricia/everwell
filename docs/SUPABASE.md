@@ -48,3 +48,8 @@ All biomarker charts remain sample content, even when signed in. Actual lab resu
 - Real-project Auth, email confirmation, persistence and two-user access checks remain required before reporting the hosted connection as verified.
 
 Official references: [Supabase Auth](https://supabase.com/docs/guides/auth), [password-based sign-in](https://supabase.com/docs/guides/auth/passwords), [row-level security](https://supabase.com/docs/guides/database/postgres/row-level-security), [publishable keys](https://supabase.com/docs/guides/api/api-keys).
+
+
+## Optional clinical review tables
+
+The newer doctor-review module adds separate source-report, private AI-draft, approved-release, verified-reviewer/assignment and audit tables. The workspace table above still stores preferences only. See [AI_DOCTOR_REVIEW.md](AI_DOCTOR_REVIEW.md) for the additional migration and access boundary. These clinical tables/functions have not been applied or verified in the live project from this environment.

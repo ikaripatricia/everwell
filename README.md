@@ -1,6 +1,6 @@
 # Everwell — preventive health test app
 
-Everwell combines a women's prevention dashboard, sample biomarker trends, care-package exploration, Australian screening guidance and GP discussion notes. This branch adds Supabase Auth and owner-scoped persistence for prevention workspace preferences.
+Everwell combines a women's prevention dashboard, sample biomarker trends, care-package exploration, Australian screening guidance and GP discussion notes. It includes Supabase Auth and owner-scoped prevention preferences, plus an optional OpenAI blood-result draft workflow with mandatory assigned-doctor approval.
 
 ## Test locally — no publishing
 
@@ -16,7 +16,7 @@ Open http://localhost:8000 on the same computer. No framework, package installat
 
 The user-supplied `website_everwell` project URL (`https://iczjiztltcpsnewofyya.supabase.co`) and its public publishable key are configured in `supabase-config.js`. This replaces the previous Tokyo project configuration; it does not migrate any accounts or data. Sydney (`ap-southeast-2`) is the requested region and must be confirmed in the new project's dashboard. This is public browser configuration, not a server secret. No secret/service-role key, database password or personal access token belongs in this repository.
 
-**The migration has not been applied and live connectivity has not been verified from the development environment.** Its network policy denied connections to Supabase. A public project URL/key does not grant database-administration access.
+**Live schema setup and connectivity have not been verified from the development environment.** Its network policy denied connections to Supabase. A public project URL/key does not grant database-administration access.
 
 Before switching existing users from Tokyo, follow [Sydney cutover steps](docs/SYDNEY_CUTOVER.md). To finish setup in the selected TEST project:
 
@@ -32,9 +32,15 @@ Alternatively, finish connecting Supabase in the assistant chat so the migration
 
 - Auth: email and credentials handled by Supabase Auth, not by an Everwell password table.
 - `public.everwell_workspaces`: user ID, optional display name, completed task identifiers, chosen health/result discussion identifiers and package preference.
-- Lab values remain explicitly fictional fixtures bundled with the app. They are never uploaded or seeded as patient records. No clinical notes, appointment records, prescriptions or clinician alerts are implemented.
+- Sample overview/result-chart values remain fictional fixtures and are not uploaded. The optional Blood reports workflow stores the structured test values explicitly submitted by the user, doctor-only AI drafts, doctor decisions and approved releases in separate clinical tables. It does not provide prescriptions, appointments or clinician alerts.
 
 Demo selections are not automatically imported on sign-in: a new account starts with an empty prevention workspace. Changes save automatically while signed in. Access/refresh tokens stay in page memory; refreshing requires signing in again. On sign-out the workspace is cleared from the interface. There is no analytics, external font/image request, localStorage session, checkout or enrolment.
+
+## Optional AI drafts and doctor review
+
+The **Blood reports** section accepts structured fictional test values for six supported markers. OpenAI prepares a doctor-only narrative draft; graphs are generated deterministically from the input values. A verified assigned doctor reviews the original lab source, edits the final explanation and approves or rejects the exact draft version. Patients cannot read drafts or self-approve. Approved graphs and the final doctor explanation are released together.
+
+The feature is disabled until its migration, registered reviewer assignments and server-only provider settings are configured. It has not been deployed or tested against live Supabase/OpenAI. Do not add provider/service secrets to the frontend or chat. See [AI/doctor review setup and limits](docs/AI_DOCTOR_REVIEW.md) for the worker, role provisioning, database assertions, model settings and clinical-governance requirements. PDF/image extraction and urgent-result monitoring are not implemented.
 
 Read [database details](docs/SUPABASE.md), [testing steps](docs/TESTING.md) and [source integration notes](docs/MERGE_NOTES.md).
 
